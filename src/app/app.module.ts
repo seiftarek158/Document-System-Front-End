@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import { CommonModule } from '@angular/common';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -17,6 +17,8 @@ import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
+import { ProductService } from './services/productservice.service';
+
 
 
 @NgModule({
@@ -24,14 +26,12 @@ import { FormsModule } from '@angular/forms';
     AppComponent,
     LoginComponent,
     RegisterComponent,
-    HomeComponent,
-    
-
-    
+    HomeComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
+    CommonModule,
     CardModule,
     InputTextModule,
     ReactiveFormsModule,
@@ -44,7 +44,7 @@ import { FormsModule } from '@angular/forms';
     FormsModule
   
   ],
-  providers: [MessageService],
+  providers: [MessageService,ProductService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

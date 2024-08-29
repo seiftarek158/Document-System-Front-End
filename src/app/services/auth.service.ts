@@ -17,22 +17,23 @@ export class AuthService {
   login(credentials: { email: string; password: string }): Observable<any> {
     return this.http.post<any>(this.loginUrl, credentials).pipe(
       tap(response => {
-        localStorage.setItem('authToken', response.token);
+        localStorage.setItem('Authorization', response.authToken);
+       
       })
     );
   }
 
   logout(): void {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem('Authorization');
     this.router.navigate(['/login']);
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('authToken');
+    return !!localStorage.getItem('Authorization');
   }
 
   getToken(): string | null {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem('Authorization');
   }
 
   getUsernameFromToken(): string | null {

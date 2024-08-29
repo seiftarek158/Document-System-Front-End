@@ -1,333 +1,136 @@
-th bootstrap 4.5.0 included, to get the result that you can see in the preview selection
+<!-- <div class="card">
+    <p-table [value]="workspaceData" [tableStyle]="{ 'min-width': '50rem' }">
+        <ng-template pTemplate="header">
+            <tr>
 
-<!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" /> -->
+                <th>Name</th>
+                <th>Description</th>
 
-<div id="main-content" class="file_manager">
-        <div class="container">            
-            <div class="row clearfix">
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-info"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Document_2017.doc</p>
-                                    <small>Size: 42KB <span class="date text-muted">Nov 02, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>                
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-info"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Document_2017.doc</p>
-                                    <small>Size: 89KB <span class="date text-muted">Dec 15, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>                
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-info"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Document_2017.doc</p>
-                                    <small>Size: 89KB <span class="date text-muted">Dec 15, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-bar-chart text-warning"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Report2016.xls</p>
-                                    <small>Size: 68KB <span class="date text-muted">Dec 12, 2016</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-bar-chart text-warning"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Report2016.xls</p>
-                                    <small>Size: 68KB <span class="date text-muted">Dec 12, 2016</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-success"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">asdf  hhkj.pdf</p>
-                                    <small>Size: 3MB <span class="date text-muted">Aug 18, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <p-button label="Danger" severity="danger" >
-                                        <i class="pi pi-check"></i>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-Workspace>
+            <tr>
 
-                                        </p-button>
+                <td>{{ Workspace.name }}</td>
+                <td>{{Workspace.description }}</td>
 
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-success"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">asdf  hhkj.pdf</p>
-                                    <small>Size: 3MB <span class="date text-muted">Aug 18, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
+
+            </tr>
+        </ng-template>
+    </p-table>
+</div> -->
+
+<div class="mb-3">
+    <p-button 
+        type="button" 
+        icon="pi pi-chevron-left" 
+        (onClick)="prev()" 
+        [disabled]="isFirstPage()" 
+        styleClass="p-button-text" />
+    <p-button 
+        type="button"
+        icon="pi pi-refresh" 
+        (onClick)="reset()" 
+        styleClass="p-button-text" />
+    <p-button 
+        type="button" 
+        icon="pi pi-chevron-right" 
+        (onClick)="next()" 
+        [disabled]="isLastPage()" 
+        styleClass="p-button-text" />
+</div>
+<div class="card">
+    <p-table
+        [value]="workspaceData"
+        [paginator]="true"
+        [rows]=5
+        [first]="first"
+        [showCurrentPageReport]="true"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        (onPage)="pageChange($event)"
+        [rowsPerPageOptions]="[5,10, 25, 50]"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name" style="width:20%">
+                    Name <p-sortIcon field="name" />
+                </th>
+                <th style="width:25%">Description</th>
+                <th style="width:20%">Created Date</th>
+                <th style="width:20%"></th>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-Workspace let-editing="editing" let-ri="rowIndex">
+            <tr [pEditableRow]="Workspace">
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input 
+                                pInputText type="text" 
+                                [(ngModel)]="Workspace.name" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{Workspace.name}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input 
+                                pInputText type="text" 
+                                [(ngModel)]="Workspace.description" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{Workspace.description}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td>{{ Workspace.createdAt | date: 'medium' }}</td>
+
+
+                <td>
+                    <div class="flex align-items-center justify-content-center gap-2">
+                        <button 
+                            *ngIf="!editing" 
+                            pButton 
+                            pRipple 
+                            type="button" 
+                            pInitEditableRow 
+                            icon="pi pi-pencil" 
+                            (click)="onRowEditInit(Workspace)" 
+                            class="p-button-rounded p-button-text">
+                        </button>
+                        <button 
+                            *ngIf="editing" 
+                            pButton 
+                            pRipple 
+                            type="button" 
+                            pSaveEditableRow 
+                            icon="pi pi-check" 
+                            (click)="onRowEditSave(Workspace)" 
+                            class="p-button-rounded p-button-text p-button-success mr-2">
+                        </button>
+                        <button 
+                            *ngIf="editing" 
+                            pButton pRipple 
+                            type="button" 
+                            pCancelEditableRow 
+                            icon="pi pi-times" 
+                            (click)="onRowEditCancel(Workspace, ri)" 
+                            class="p-button-rounded p-button-text p-button-danger">
+                        </button>
                     </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-success"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">asdf  hhkj.pdf</p>
-                                    <small>Size: 3MB <span class="date text-muted">Aug 18, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-success"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">asdf  hhkj.pdf</p>
-                                    <small>Size: 3MB <span class="date text-muted">Aug 18, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-bar-chart text-warning"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Report2016.xls</p>
-                                    <small>Size: 68KB <span class="date text-muted">Dec 12, 2016</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-bar-chart text-warning"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Report2017.xls</p>
-                                    <small>Size: 103KB <span class="date text-muted">Jan 24, 2016</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-bar-chart text-warning"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Report2016.xls</p>
-                                    <small>Size: 68KB <span class="date text-muted">Dec 12, 2016</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-info"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Document_2017.doc</p>
-                                    <small>Size: 42KB <span class="date text-muted">Nov 02, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-info"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Document_2017.doc</p>
-                                    <small>Size: 89KB <span class="date text-muted">Dec 15, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-bar-chart text-warning"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Report2017.xls</p>
-                                    <small>Size: 103KB <span class="date text-muted">Jan 24, 2016</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12">
-                    <div class="card">
-                        <div class="file">
-                            <a href="javascript:void(0);">
-                                <div class="hover">
-                                    <button type="button" class="btn btn-icon btn-danger">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                                <div class="icon">
-                                    <i class="fa fa-file text-info"></i>
-                                </div>
-                                <div class="file-name">
-                                    <p class="m-b-5 text-muted">Document_2017.doc</p>
-                                    <small>Size: 89KB <span class="date text-muted">Dec 15, 2017</span></small>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-        </div>
-    </div>
+                </td>
+   
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="paginatorleft">
+            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text" />
+        </ng-template>
+
+    </p-table>
+</div>
