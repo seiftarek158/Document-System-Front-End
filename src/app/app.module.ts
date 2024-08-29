@@ -18,6 +18,9 @@ import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from './services/productservice.service';
+import { RippleModule } from 'primeng/ripple';
+// import { SortModule } from 'primeng/sort';
+
 
 
 
@@ -31,6 +34,7 @@ import { ProductService } from './services/productservice.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    RippleModule,
     CommonModule,
     CardModule,
     InputTextModule,
