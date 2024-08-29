@@ -9,16 +9,16 @@ import { MessageService } from 'primeng/api';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  
+
 })
 export class HomeComponent implements OnInit {
-  workspaceData: Workspace[] = [];;
+  workspaceData: Workspace[] = [];
 
   first = 0;
   rows = 5;
   editingWorkspace: any = null;
   clonedWorkspaces: { [s: string]: Workspace } = {};
-    
+
 
 
   constructor(private workspaceService: WorkspaceService,private router: Router, private messageService: MessageService) {}
@@ -30,7 +30,7 @@ export class HomeComponent implements OnInit {
   // }
   ngOnInit(): void {
     this.workspaceService.getWorkspaceData().subscribe(
-      
+
       data => {
         // console.log('inside home comoponent');
         this.workspaceData = data;
