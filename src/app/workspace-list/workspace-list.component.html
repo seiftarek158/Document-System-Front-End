@@ -1,0 +1,133 @@
+<div class="card">
+    <p-toast></p-toast>
+    <p-table
+        [value]="workspaceData"
+        editMode="row"
+        [paginator]="true"
+        [rows]=5
+        [first]="first"
+        [showCurrentPageReport]="true"
+        [tableStyle]="{ 'min-width': '50rem' }"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        (onPage)="pageChange($event)"
+        [rowsPerPageOptions]="[5,10, 25, 50]"
+        class="fixed-width-table"
+    >
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name" style="width:40%" class="fixed-width-column">
+                    Name <p-sortIcon field="name" />
+                </th>
+                <th style="width:30%" class="fixed-width-column">Description</th>
+                <th pSortableColumn="createdAt" style="width:40%" class="fixed-width-column">Created Date <p-sortIcon field="createdAt" /></th>
+                <th style="width:40%" class="fixed-width-column"></th>
+                <th style="width:20%" class="fixed-width-column"></th>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-Workspace let-editing="editing" let-ri="rowIndex" class="fixed-width-table">
+            <tr [pEditableRow]="Workspace">
+                <td class="fixed-width-column" (click)=" !editing && navigateToDocuments(Workspace)" style="cursor: pointer;">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input
+                                pInputText type="text"
+                                [(ngModel)]="Workspace.name" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{Workspace.name}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td class="fixed-width-column">
+                    <p-cellEditor>
+                        <ng-template pTemplate="input">
+                            <input
+                                pInputText type="text"
+                                [(ngModel)]="Workspace.description" />
+                        </ng-template>
+                        <ng-template pTemplate="output">
+                            {{Workspace.description}}
+                        </ng-template>
+                    </p-cellEditor>
+                </td>
+                <td class="fixed-width-column">{{ Workspace.createdAt | date: 'medium' }}</td>
+
+
+
+                <td class="fixed-width-column">
+                    <div class="flex align-items-center justify-content-center gap-2">
+                        <button
+                            *ngIf="!editing"
+                            pButton
+                            pRipple
+                            type="button"
+                            pInitEditableRow
+                            icon="pi pi-pencil"
+                            (click)="onRowEditInit(Workspace)"
+                            class="p-button-rounded p-button-text">
+                        </button>
+                        <button
+                            *ngIf="editing"
+                            pButton
+                            pRipple
+                            type="button"
+                            pSaveEditableRow
+                            icon="pi pi-check"
+                            (click)="onRowEditSave(Workspace)"
+                            class="p-button-rounded p-button-text p-button-success mr-2">
+                        </button>
+                        <button
+                            *ngIf="editing"
+                            pButton pRipple
+                            type="button"
+                            pCancelEditableRow
+                            icon="pi pi-times"
+                            (click)="onRowEditCancel(Workspace, ri)"
+                            class="p-button-rounded p-button-text p-button-danger">
+                        </button>
+                    </div>
+                </td>
+                <td class="fixed-width-column">
+                    <p-button icon="pi pi-trash" class="p-button-danger" (click)="confirmDelete(Workspace)"></p-button>
+                  </td>
+
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="paginatorleft">
+            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text" (onClick)="showDialog=true" />
+        </ng-template>
+
+    </p-table>
+
+    <p-dialog header="Confirm Delete" [(visible)]="showDeleteDialog" [modal]="true" [closable]="false">
+        <p>Are you sure you want to delete this workspace?</p>
+        <div class="p-dialog-footer">
+          <button type="button" pButton icon="pi pi-times" label="No" (click)="showDeleteDialog = false"></button>
+          <button type="button" pButton icon="pi pi-check" label="Yes" (click)="deleteWorkspace()"></button>
+        </div>
+      </p-dialog>
+
+    <p-dialog header="Create New Workspace" [(visible)]="showDialog" [modal]="true" [closable]="false">
+        <form (ngSubmit)="onSubmit()" #workspaceForm="ngForm">
+          <div class="p-field">
+            <label for="name">Name:</label>
+            <input pInputText type="text" id="name" required [(ngModel)]="newWorkspace.name" name="name" />
+          </div>
+          <div class="p-field">
+            <label for="description">Description:</label>
+            <input pInputText type="text" id="description" [(ngModel)]="newWorkspace.description" name="description" />
+          </div>
+
+          <div class="p-dialog-footer">
+            <button type="button" pButton icon="pi pi-times" label="Cancel" (click)="showDialog = false"></button>
+            <button type="submit" pButton icon="pi pi-check" label="Create"></button>
+          </div>
+        </form>
+      </p-dialog>
+
+
+
+</div>

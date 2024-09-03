@@ -1,0 +1,11 @@
+.fixed-width-table {
+    width: 1200px; /* Set the desired fixed width for the table */
+    table-layout: fixed; /* Ensures the table layout is fixed */
+  }
+  
+  .fixed-width-column {
+    width: 200px; /* Set the desired fixed width for each column */
+    overflow: hidden; /* Prevents content overflow */
+    text-overflow: ellipsis; /* Adds ellipsis for overflowing text */
+    white-space: nowrap; /* Prevents text from wrapping */
+  }
