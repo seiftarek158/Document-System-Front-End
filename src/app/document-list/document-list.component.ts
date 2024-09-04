@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Directory } from '../services/Workspace';
 import { BaseData } from '../services/basedata';
 import { ContentService } from '../services/content.service';
 import { MessageService } from 'primeng/api';
+import { WorkspaceService } from '../services/workspace.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-document-list',
@@ -11,15 +12,18 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./document-list.component.css']
 })
 export class DocumentListComponent implements OnInit {
-  workspaceData: Directory= {};
+  workspaceData: BaseData= {};
   newFile: BaseData = {};
   ContentDataArray: BaseData[] = [];
-  clonedfile: { [s: string]: BaseData } = {};
+  clonedBaseData: { [s: string]: BaseData } = {};
   first = 0;
   rows = 5;
   showDeleteDialog: boolean = false;
   showDialog: boolean = false;
   uploadUrl: string = `http://localhost:8080/${this.workspaceData.id}/upload`;
+  BaseDataToDelete: BaseData | null = null;
+
+
 
   next() {
     this.first = this.first + this.rows;
@@ -43,6 +47,7 @@ isFirstPage(): boolean {
 }
 constructor(
   private contentService: ContentService,
+  private workspaceService: WorkspaceService,
   private router: Router, 
   private messageService: MessageService) {
     const navigation = this.router.getCurrentNavigation();
@@ -53,52 +58,78 @@ constructor(
   
 
   ngOnInit(): void {
-    console.log(this.workspaceData);
-    console.log("skskskskk") // Use the workspace data as needed
+    this.loadContentData();
 
-    this.contentService.getAllDocumentData(this.workspaceData).subscribe(
-      data => {
-        this.ContentDataArray = data;
-      },
-      error => {
-        console.error('Error fetching workspace data', error);
-      }
-    );
+  
   }
   onRowEditInit(file: BaseData) {
-    this.clonedfile[file.id as string] = { ...file };
-    console.log(this.clonedfile[file.id as string] );
+    this.clonedBaseData[file.id as string] = { ...file };
+    console.log(this.clonedBaseData[file.id as string] );
   
   }
 
   onRowEditSave(file: BaseData) {
-    // this.contentService.updateWorkspace(file).subscribe(
-    //   updatedWorkspace => {
-    //     // Update the local workspace data with the updated workspace
-    //     const index = this.workspaceData.findIndex(w => w.id === updatedWorkspace.id);
-    //     if (index !== -1) {
-    //       this.workspaceData[index] = updatedWorkspace;
-    //     }
-    //     delete this.clonedWorkspaces[file.id as string];
-    //     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace is updated' });
-    //   },
-    //   error => {
-    //     console.error('Error updating workspace', error);
-    //     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update workspace' });
-    //   }
-    // );
+    if(file.type === 'document'){
+    this.contentService.updateDocument(file).subscribe(
+      updatedWorkspace => {
+        // Update the local workspace data with the updated workspace
+        const index = this.ContentDataArray.findIndex(w => w.id === updatedWorkspace.id);
+        if (index !== -1) {
+          this.ContentDataArray[index] = updatedWorkspace;
+        }
+        delete this.clonedBaseData[file.id as string];
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Document is updated' });
+      },
+      error => {
+        console.error('Error updating Document', error);
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update Document' });
+      }
+    );
   }
-  onRowEditCancel(workspace: Directory, index: number) {
-    // this.clonedWorkspaces[index] = this.clonedWorkspaces[workspace.id as string];
-    // delete this.clonedWorkspaces[workspace.id  as string];
+  else{
+    // TODO update workspace
+  }
+  }
+  onRowEditCancel(workspace: BaseData, index: number) {
+    this.clonedBaseData[index] = this.clonedBaseData[workspace.id as string];
+    delete this.clonedBaseData[workspace.id  as string];
 }
 
-confirmDelete(workspace: Directory) {
-  // this.workspaceToDelete = workspace;
-  // this.showDeleteDialog = true;
+confirmDelete(basedata: BaseData) {
+  this.BaseDataToDelete=basedata;
+  this.showDeleteDialog = true;
 }
 deleteBaseData() {
-  // if (this.workspaceToDelete) {
+  if (this.BaseDataToDelete) {
+    if(this.BaseDataToDelete.type === 'document'){
+      this.contentService.deleteDocument(this.BaseDataToDelete.id ?? '').subscribe(
+        () => {
+          this.ContentDataArray = this.ContentDataArray.filter(ws => ws.id !== this.BaseDataToDelete!.id);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace deleted successfully' });
+          this.showDeleteDialog = false;
+          this.BaseDataToDelete = null;
+        },
+        error => {
+          console.error('Error deleting document', error);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete workspace' });
+        }
+      );
+    }
+    else{
+      this.workspaceService.deleteWorkspace(this.BaseDataToDelete.id ?? '').subscribe(
+        () => {
+          this.ContentDataArray = this.ContentDataArray.filter(ws => ws.id !== this.BaseDataToDelete!.id);
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace deleted successfully' });
+          this.showDeleteDialog = false;
+          this.BaseDataToDelete = null;
+        },
+        (error: HttpErrorResponse) => {
+          console.error('Error deleting document', error);
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: `Failed to delete workspace ${error}` });
+        }
+      );
+    }
+  }
   //   this.workspaceService.deleteWorkspace(this.workspaceToDelete.id ?? '').subscribe(
   //     () => {
   //       this.workspaceData = this.workspaceData.filter(ws => ws.id !== this.workspaceToDelete!.id);
@@ -150,10 +181,10 @@ onUpload(event: any,fileUpload:any): void {
 loadContentData(): void {
   this.contentService.getAllDocumentData(this.workspaceData).subscribe(
     data => {
-      this.ContentDataArray = data;
+      this.ContentDataArray = data.map(item => ({...item,type:'document'}));
     },
     error => {
-      console.error('Error fetching content data', error);
+      console.error('Error fetching document data', error);
     }
   );
 }

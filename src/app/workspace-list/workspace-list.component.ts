@@ -1,9 +1,9 @@
 
 import { Component, OnInit } from '@angular/core';
-import { Directory } from '../services/Workspace';
 import { WorkspaceService } from '../services/workspace.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { BaseData } from '../services/basedata';
 
 @Component({
   selector: 'app-workspace-list',
@@ -11,15 +11,15 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./workspace-list.component.css']
 })
 export class WorkspaceListComponent implements OnInit{
-  workspaceData: Directory[] = [];
-  newWorkspace: Directory = {};
+  workspaceData: BaseData[] = [];
+  newWorkspace: BaseData = {};
   first = 0;
   rows = 5;
   editingWorkspace: any = null;
-  clonedWorkspaces: { [s: string]: Directory } = {};
+  clonedWorkspaces: { [s: string]: BaseData } = {};
   showDialog: boolean = false;
   showDeleteDialog: boolean = false;
-  workspaceToDelete: Directory | null = null;
+  workspaceToDelete: BaseData | null = null;
 
   
     constructor(
@@ -32,7 +32,8 @@ export class WorkspaceListComponent implements OnInit{
     ngOnInit(): void {
     this.workspaceService.getWorkspaceData().subscribe(
       data => {
-        this.workspaceData = data;
+        this.workspaceData = data.map(item => ({ ...item, type: "workspace" }));;
+        
       },
       error => {
         console.error('Error fetching workspace data', error);
@@ -64,13 +65,13 @@ isFirstPage(): boolean {
     return this.workspaceData ? this.first === 0 : true;
 }
 
-onRowEditInit(workspace: Directory) {
+onRowEditInit(workspace: BaseData) {
   this.clonedWorkspaces[workspace.id as string] = { ...workspace };
   console.log(this.clonedWorkspaces[workspace.id as string] );
 
 }
 
-onRowEditSave(workspace: Directory) {
+onRowEditSave(workspace: BaseData) {
   this.workspaceService.updateWorkspace(workspace).subscribe(
     updatedWorkspace => {
       // Update the local workspace data with the updated workspace
@@ -88,7 +89,7 @@ onRowEditSave(workspace: Directory) {
   );
 }
 
-onRowEditCancel(workspace: Directory, index: number) {
+onRowEditCancel(workspace: BaseData, index: number) {
     this.clonedWorkspaces[index] = this.clonedWorkspaces[workspace.id as string];
     delete this.clonedWorkspaces[workspace.id  as string];
 }
@@ -107,7 +108,7 @@ onSubmit(){
     }
   );
 }
-confirmDelete(workspace: Directory) {
+confirmDelete(workspace: BaseData) {
   this.workspaceToDelete = workspace;
   this.showDeleteDialog = true;
 }
@@ -128,7 +129,7 @@ deleteWorkspace() {
   }
 }
 
-navigateToDocuments(workspaceData: Directory) {
+navigateToDocuments(workspaceData: BaseData) {
   this.router.navigate(['/documentList'],{state: {workspaceData}}); // Navigate to the home page
 }
 

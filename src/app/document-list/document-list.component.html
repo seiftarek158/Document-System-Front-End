@@ -7,7 +7,7 @@
         [rows]=5
         [first]="first"
         [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '50rem' }"
+        [tableStyle]="{ 'min-width': '80rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         (onPage)="pageChange($event)"
         [rowsPerPageOptions]="[5,10, 25, 50]"
@@ -15,11 +15,13 @@
     >
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="name" style="width:40%" class="fixed-width-column">
+                <th style="width:5%" class="fixed-width-column"></th>
+                <th pSortableColumn="name" style="width:20%" class="fixed-width-column">
                     Name <p-sortIcon field="name" />
                 </th>
                 <th style="width:30%" class="fixed-width-column">Description</th>
                 <th pSortableColumn="createdAt" style="width:40%" class="fixed-width-column">Created Date <p-sortIcon field="createdAt" /></th>
+                <th style="width:20%" class="fixed-width-column"></th>
                 <th style="width:40%" class="fixed-width-column"></th>
                 <th style="width:20%" class="fixed-width-column"></th>
 
@@ -27,6 +29,14 @@
         </ng-template>
         <ng-template pTemplate="body" let-BaseData let-editing="editing" let-ri="rowIndex" class="fixed-width-table">
             <tr [pEditableRow]="BaseData">
+                <td>
+                    <ng-container *ngIf="BaseData.type === 'workspace'; else documentIcon">
+                        <i class="pi pi-folder" style="font-size: 2rem;"></i> <!-- Folder Icon -->
+                      </ng-container>
+                      <ng-template #documentIcon>
+                        <i class="pi pi-file" style="font-size: 2rem;"></i> <!-- File Icon -->
+                      </ng-template>
+                </td>
                 <td class="fixed-width-column"  style="cursor: pointer;">
                     <!-- (click)=" !editing && navigateToDocuments(BaseData)" -->
                     <p-cellEditor>
@@ -42,7 +52,7 @@
                 </td>
                 <td class="fixed-width-column">
                     <p-cellEditor>
-                        <ng-template pTemplate="input">
+                        <ng-template pTemplate="input" *ngIf="BaseData.type==='workspace'">
                             <input
                                 pInputText type="text"
                                 [(ngModel)]="BaseData.description" />
@@ -109,26 +119,14 @@
           name="demo[]" 
           [customUpload]="true"
           [auto]="false" 
-          (uploadHandler)="onUpload($event,fileUpload)">
+          (uploadHandler)="onUpload($event,fileUpload)"
+          class="p-2">
         </p-fileUpload>
-        <!-- url="https://www.primefaces.org/cdn/api/upload.php"  -->
+
       </div>
     </ng-template>
 
-        <!-- <ng-template pTemplate="paginatorleft">
-            <p-button type="button" icon="pi pi-plus" styleClass="p-button-text" (onClick)="showDialog=true" />
-        
-        </ng-template>
-        <ng-template pTemplate="paginatorleft">
-        <p-fileUpload 
-        mode="basic" 
-        chooseLabel="Choose" 
-        chooseIcon="pi pi-upload"
-        name="demo[]" 
-        url="https://www.primefaces.org/cdn/api/upload.php" 
-        accept="image/*" 
-        (onUpload)="onUpload($event)" />
-    </ng-template> -->
+      
 
     </p-table>
 

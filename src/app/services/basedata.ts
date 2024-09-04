@@ -3,4 +3,8 @@ export interface BaseData {
     name?: string;
     createdDate?: Date;
     description?: string;
+    workspaceId?: string;
+    parentId?: string;
+    type?: string;
+
   }
