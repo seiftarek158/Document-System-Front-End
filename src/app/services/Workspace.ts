@@ -1,5 +1,6 @@
+import { BaseData } from "./basedata";
 
-export interface Workspace {
+export interface Directory extends BaseData {
     id?:string;
     name?: string;
     description?: string;

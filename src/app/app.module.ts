@@ -22,6 +22,7 @@ import { RippleModule } from 'primeng/ripple';
 import { WorkspaceListComponent } from './workspace-list/workspace-list.component';
 import { TokenInterceptorService } from './services/token-interceptor.service';
 import { DocumentListComponent } from './document-list/document-list.component';
+import { FileUploadModule } from 'primeng/fileupload';
 // import { WorkspaceFormComponent } from './workspace-form/workspace-form.component';
 // import { SortModule } from 'primeng/sort';
 
@@ -54,6 +55,7 @@ import { DocumentListComponent } from './document-list/document-list.component';
     TableModule,
     DialogModule,
     FormsModule,
+    FileUploadModule,
 
      // Add the WorkspaceFormComponent to the imports
   

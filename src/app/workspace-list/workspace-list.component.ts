@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { Workspace } from '../services/Workspace';
+import { Directory } from '../services/Workspace';
 import { WorkspaceService } from '../services/workspace.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
@@ -11,15 +11,15 @@ import { MessageService } from 'primeng/api';
   styleUrls: ['./workspace-list.component.css']
 })
 export class WorkspaceListComponent implements OnInit{
-  workspaceData: Workspace[] = [];
-  newWorkspace: Workspace = {};
+  workspaceData: Directory[] = [];
+  newWorkspace: Directory = {};
   first = 0;
   rows = 5;
   editingWorkspace: any = null;
-  clonedWorkspaces: { [s: string]: Workspace } = {};
+  clonedWorkspaces: { [s: string]: Directory } = {};
   showDialog: boolean = false;
   showDeleteDialog: boolean = false;
-  workspaceToDelete: Workspace | null = null;
+  workspaceToDelete: Directory | null = null;
 
   
     constructor(
@@ -64,13 +64,13 @@ isFirstPage(): boolean {
     return this.workspaceData ? this.first === 0 : true;
 }
 
-onRowEditInit(workspace: Workspace) {
+onRowEditInit(workspace: Directory) {
   this.clonedWorkspaces[workspace.id as string] = { ...workspace };
   console.log(this.clonedWorkspaces[workspace.id as string] );
 
 }
 
-onRowEditSave(workspace: Workspace) {
+onRowEditSave(workspace: Directory) {
   this.workspaceService.updateWorkspace(workspace).subscribe(
     updatedWorkspace => {
       // Update the local workspace data with the updated workspace
@@ -88,7 +88,7 @@ onRowEditSave(workspace: Workspace) {
   );
 }
 
-onRowEditCancel(workspace: Workspace, index: number) {
+onRowEditCancel(workspace: Directory, index: number) {
     this.clonedWorkspaces[index] = this.clonedWorkspaces[workspace.id as string];
     delete this.clonedWorkspaces[workspace.id  as string];
 }
@@ -107,7 +107,7 @@ onSubmit(){
     }
   );
 }
-confirmDelete(workspace: Workspace) {
+confirmDelete(workspace: Directory) {
   this.workspaceToDelete = workspace;
   this.showDeleteDialog = true;
 }
@@ -128,7 +128,7 @@ deleteWorkspace() {
   }
 }
 
-navigateToDocuments(workspaceData: Workspace) {
+navigateToDocuments(workspaceData: Directory) {
   this.router.navigate(['/documentList'],{state: {workspaceData}}); // Navigate to the home page
 }
 

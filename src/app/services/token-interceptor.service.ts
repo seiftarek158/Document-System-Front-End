@@ -6,6 +6,7 @@ import { Observable } from "rxjs";
 export class TokenInterceptorService implements HttpInterceptor {
   private loginUrl = 'http://localhost:8080/login';
   private registerUrl = 'http://localhost:8080/Home/users';
+  private uploadUrl = 'https://www.primefaces.org/cdn/api/upload.php';
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
      
   
@@ -13,7 +14,7 @@ export class TokenInterceptorService implements HttpInterceptor {
     console.log("inside token interceptor");
 
   // Exclude the login 
-  if (req.url === this.loginUrl || req.url === this.registerUrl) {
+  if (req.url === this.loginUrl || req.url === this.registerUrl || req.url === this.uploadUrl) {
     return next.handle(req);
   }
 

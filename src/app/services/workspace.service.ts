@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Workspace } from './Workspace';
+import { Directory } from './Workspace';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
 })
 export class WorkspaceService {
   
-  private apiUrl = 'http://localhost:8080/workspace'; // Replace with your API URL
+  private apiUrl = 'http://localhost:8080/directory'; // Replace with your API URL
 
   constructor(private http: HttpClient,private authService: AuthService) { }
   
@@ -17,15 +17,15 @@ export class WorkspaceService {
     console.log("inside workspace service");
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<Workspace>(`${this.apiUrl}/user`,{ headers });
+    return this.http.get<Directory>(`${this.apiUrl}/user`,{ headers });
 
   }
 
-  updateWorkspace(workspace: Workspace): Observable<Workspace> {
-    return this.http.put<Workspace>(`${this.apiUrl}/update/${workspace.id}`, workspace);
+  updateWorkspace(directory: Directory): Observable<Directory> {
+    return this.http.put<Directory>(`${this.apiUrl}/${directory.id}`, directory);
   }
-  createWorkspace(workspace: Workspace): Observable<Workspace> {
-    return this.http.post<Workspace>(`${this.apiUrl}/create`, workspace);
+  createWorkspace(directory: Directory): Observable<Directory> {
+    return this.http.post<Directory>(`${this.apiUrl}/new`, directory);
   }
   deleteWorkspace(id: string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
