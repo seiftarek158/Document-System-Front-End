@@ -13,7 +13,6 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
-    // canActivate: [AuthGuard]
 
   },
   {
@@ -36,8 +35,8 @@ const routes: Routes = [
   {
     path: 'documentList',
     component: DocumentListComponent
-  }
-
+  },
+  
 
 ];
 

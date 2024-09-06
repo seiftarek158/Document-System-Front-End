@@ -34,10 +34,10 @@ export class ContentService {
   updateDocument(document: BaseData): Observable<BaseData> {
     return this.http.put<BaseData>(`${this.apiUrl}document/${document.id}`, document);
   }
+  
+  downloadDocument(id: string): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}document/${id}`, { responseType: 'blob' });
+  }
 
-  // getAllData(): Observable<CombinedData[]> {
-  //   return forkJoin([this.getDirectories(), this.getDocuments()]).pipe(
-  //     map(([directories, documents]) => [...directories, ...documents])
-  //   );
-  // }
+
 }

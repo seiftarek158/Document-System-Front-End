@@ -1,5 +1,7 @@
 <div class="card">
     <p-toast></p-toast>
+
+
     <p-table
         [value]="ContentDataArray"
         editMode="row"
@@ -15,18 +17,20 @@
     >
         <ng-template pTemplate="header">
             <tr>
-                <th style="width:5%" class="fixed-width-column"></th>
-                <th pSortableColumn="name" style="width:20%" class="fixed-width-column">
-                    Name <p-sortIcon field="name" />
+                <th style="width:5%"  ></th>
+                <th  style="width:20%"  >
+                    Name 
                 </th>
-                <th style="width:30%" class="fixed-width-column">Description</th>
-                <th pSortableColumn="createdAt" style="width:40%" class="fixed-width-column">Created Date <p-sortIcon field="createdAt" /></th>
-                <th style="width:20%" class="fixed-width-column"></th>
-                <th style="width:40%" class="fixed-width-column"></th>
-                <th style="width:20%" class="fixed-width-column"></th>
+                <th style="width:30%"  >Description</th>
+                <th  style="width:40%"  >Created Date </th>
+                <th style="width:20%"  ></th>
+                <th style="width:40%"  ></th>
+                <th style="width:20%"  ></th>
 
             </tr>
         </ng-template>
+
+
         <ng-template pTemplate="body" let-BaseData let-editing="editing" let-ri="rowIndex" class="fixed-width-table">
             <tr [pEditableRow]="BaseData">
                 <td>
@@ -37,20 +41,21 @@
                         <i class="pi pi-file" style="font-size: 2rem;"></i> <!-- File Icon -->
                       </ng-template>
                 </td>
-                <td class="fixed-width-column"  style="cursor: pointer;">
-                    <!-- (click)=" !editing && navigateToDocuments(BaseData)" -->
+                <td   (click)="!editing && OpenOrnavigateTo(BaseData)" style="cursor: pointer;">
+
                     <p-cellEditor>
                         <ng-template pTemplate="input">
                             <input
                                 pInputText type="text"
-                                [(ngModel)]="BaseData.name" />
+                                [(ngModel)]="BaseData.name"
+                                 />
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{BaseData.name}}
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td class="fixed-width-column">
+                <td  >
                     <p-cellEditor>
                         <ng-template pTemplate="input" *ngIf="BaseData.type==='workspace'">
                             <input
@@ -62,12 +67,21 @@
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td class="fixed-width-column">{{ BaseData.createdAt | date: 'medium' }}</td>
+                <td  >{{ BaseData.createdAt | date: 'medium' }}</td>
 
 
 
-                <td class="fixed-width-column">
+                <td  >
                     <div class="flex align-items-center justify-content-center gap-2">
+                      <button
+                          *ngIf="BaseData.type === 'document'"
+                          pButton
+                          pRipple
+                          type="button"
+                          icon="pi pi-download"
+                          (click)="downloadDocument(BaseData.id,BaseData.name)"
+                          class="p-button-rounded p-button-text" >
+                        </button>
                         <button
                             *ngIf="!editing"
                             pButton
@@ -99,8 +113,9 @@
                         </button>
                     </div>
                 </td>
-                <td class="fixed-width-column">
-                    <p-button icon="pi pi-trash" class="p-button-danger" (click)="confirmDelete(BaseData)"></p-button>
+                <td  >
+                    <p-button icon="pi pi-trash" 
+                    class="p-button-rounded p-button-danger" (click)="confirmDelete(BaseData)"></p-button>
                   </td>
 
 
@@ -157,5 +172,21 @@
       </p-dialog>
 
 
+      <p-dialog 
+      header="Document Viewer" 
+      [modal]="true" 
+      [style]="{width: '100vw', height: '100vh'}" 
+      [contentStyle]="{overflow: 'hidden'}" 
+      [(visible)]="previewDocumentDialog" 
+      [baseZIndex]="10000"
+      (onHide)="onDialogHide()"
+      >
+    <ng-container *ngIf="selectedDocument && isImage(selectedDocument.name); else otherFile">
+      <img [src]="selectedDocumentUrl" alt="Document Image" class="document-image" />
+    </ng-container>
+    <ng-template #otherFile>
+      <iframe [src]="selectedDocumentUrl" class="document-frame"></iframe>
+    </ng-template>
+  </p-dialog>
 
 </div>

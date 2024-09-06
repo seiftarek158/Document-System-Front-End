@@ -23,6 +23,9 @@ import { WorkspaceListComponent } from './workspace-list/workspace-list.componen
 import { TokenInterceptorService } from './services/token-interceptor.service';
 import { DocumentListComponent } from './document-list/document-list.component';
 import { FileUploadModule } from 'primeng/fileupload';
+
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+
 // import { WorkspaceFormComponent } from './workspace-form/workspace-form.component';
 // import { SortModule } from 'primeng/sort';
 
@@ -37,7 +40,6 @@ import { FileUploadModule } from 'primeng/fileupload';
     HomeComponent,
     WorkspaceListComponent,
     DocumentListComponent,
-
 
   ],
   imports: [
@@ -56,6 +58,7 @@ import { FileUploadModule } from 'primeng/fileupload';
     DialogModule,
     FormsModule,
     FileUploadModule,
+    PdfViewerModule,
 
      // Add the WorkspaceFormComponent to the imports
   

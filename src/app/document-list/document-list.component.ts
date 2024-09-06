@@ -5,6 +5,8 @@ import { ContentService } from '../services/content.service';
 import { MessageService } from 'primeng/api';
 import { WorkspaceService } from '../services/workspace.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import * as FileSaver from 'file-saver';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-document-list',
@@ -20,9 +22,24 @@ export class DocumentListComponent implements OnInit {
   rows = 5;
   showDeleteDialog: boolean = false;
   showDialog: boolean = false;
-  uploadUrl: string = `http://localhost:8080/${this.workspaceData.id}/upload`;
   BaseDataToDelete: BaseData | null = null;
+  visible: boolean = true;
+  previewDocumentDialog: boolean = false;
+  selectedDocumentUrl: SafeResourceUrl | null = null;
+  selectedDocument: BaseData | null = null;
 
+
+  constructor(
+    private contentService: ContentService,
+    private workspaceService: WorkspaceService,
+    private router: Router, 
+    private messageService: MessageService,
+    private sanitizer: DomSanitizer
+  ) {
+      const navigation = this.router.getCurrentNavigation();
+      this.workspaceData = navigation?.extras.state?.['workspaceData'];
+      
+    }
 
 
   next() {
@@ -33,10 +50,10 @@ export class DocumentListComponent implements OnInit {
 }
 reset() {
   this.first = 0;
-}
+  }
 isLastPage(): boolean {
   return this.ContentDataArray ? this.first >= this.ContentDataArray.length - this.rows : true;
-}
+  }
 
 isFirstPage(): boolean {
   return this.ContentDataArray ? this.first === 0 : true;
@@ -45,26 +62,16 @@ isFirstPage(): boolean {
     this.first = event.first;
     this.rows = event.rows;
 }
-constructor(
-  private contentService: ContentService,
-  private workspaceService: WorkspaceService,
-  private router: Router, 
-  private messageService: MessageService) {
-    const navigation = this.router.getCurrentNavigation();
-    this.workspaceData = navigation?.extras.state?.['workspaceData'];
-    
-  }
+
 
   
 
   ngOnInit(): void {
     this.loadContentData();
-
-  
   }
   onRowEditInit(file: BaseData) {
     this.clonedBaseData[file.id as string] = { ...file };
-    console.log(this.clonedBaseData[file.id as string] );
+    // console.log(this.clonedBaseData[file.id as string] );
   
   }
 
@@ -81,7 +88,7 @@ constructor(
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Document is updated' });
       },
       error => {
-        console.error('Error updating Document', error);
+        // console.error('Error updating Document', error);
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update Document' });
       }
     );
@@ -90,10 +97,13 @@ constructor(
     // TODO update workspace
   }
   }
+
+
+
   onRowEditCancel(workspace: BaseData, index: number) {
     this.clonedBaseData[index] = this.clonedBaseData[workspace.id as string];
     delete this.clonedBaseData[workspace.id  as string];
-}
+  }
 
 confirmDelete(basedata: BaseData) {
   this.BaseDataToDelete=basedata;
@@ -110,7 +120,7 @@ deleteBaseData() {
           this.BaseDataToDelete = null;
         },
         error => {
-          console.error('Error deleting document', error);
+          // console.error('Error deleting document', error);
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete workspace' });
         }
       );
@@ -124,54 +134,48 @@ deleteBaseData() {
           this.BaseDataToDelete = null;
         },
         (error: HttpErrorResponse) => {
-          console.error('Error deleting document', error);
+          // console.error('Error deleting document', error);
           this.messageService.add({ severity: 'error', summary: 'Error', detail: `Failed to delete workspace ${error}` });
         }
       );
     }
   }
-  //   this.workspaceService.deleteWorkspace(this.workspaceToDelete.id ?? '').subscribe(
-  //     () => {
-  //       this.workspaceData = this.workspaceData.filter(ws => ws.id !== this.workspaceToDelete!.id);
-  //       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace deleted successfully' });
-  //       this.showDeleteDialog = false;
-  //       this.workspaceToDelete = null;
-  //     },
-  //     error => {
-  //       console.error('Error deleting workspace', error);
-  //       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to delete workspace' });
-  //     }
-  //   );
-  // }
+
 }
 onSubmit(){
-  // this.workspaceService.createWorkspace(this.newWorkspace).subscribe(
-  //   createdWorkspace => {
-  //     this.workspaceData.push(createdWorkspace);
-  //     this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace created successfully' });
-  //     this.newWorkspace = {}; // Reset the form
-  //     this.showDialog = false; // Close the dialog
-  //   },
-  //   error => {
-  //     console.error('Error creating workspace', error);
-  //     this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create workspace' });
-  //   }
-  // );
+// TODO: Implement onSubmit
+
+this.workspaceService.createWorkspace(this.newFile).subscribe(
+  createdWorkspace => {
+    createdWorkspace.type = 'workspace';
+    createdWorkspace.parentId = this.workspaceData.id;
+    this.ContentDataArray.push(createdWorkspace);
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace created successfully' });
+    this.newFile = {}; // Reset the form
+    this.showDialog = false; // Close the dialog
+  },
+  error => {
+    console.error('Error creating workspace', error);
+    this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create workspace' });
+  }
+);
+
+
 }
 onUpload(event: any,fileUpload:any): void {
   const file = event.files[0];
-  console.log("inside document list service");
+  // console.log("inside document list service");
   this.contentService.uploadDocument(this.workspaceData,file).subscribe(
 
     response => {
-      console.log('File uploaded successfully', response);
+      // console.log('File uploaded successfully', response);
       this.loadContentData(); // Reload the content data to reflect the new file
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'File uploaded successfully' });
       fileUpload.clear();
 
     },
     error => {
-      console.error('Error uploading file', error);
+      // console.error('Error uploading file', error);
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to upload file' });
       fileUpload.clear();
     }
@@ -184,10 +188,73 @@ loadContentData(): void {
       this.ContentDataArray = data.map(item => ({...item,type:'document'}));
     },
     error => {
-      console.error('Error fetching document data', error);
+      // console.error('Error fetching document data', error);
     }
   );
 }
+
+downloadDocument(documentid:string,documentName:string): void { 
+  this.contentService.downloadDocument(documentid).subscribe(
+    response => {
+      const blob = new Blob([response], { type: 'application/octet-stream' });
+      FileSaver.saveAs(blob, documentName);
+    },
+    error => {
+      // console.error('Error downloading document', error);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to download document' });
+    }
+  );
+}
+
+OpenOrnavigateTo(document: BaseData): void {
+  console.log('Document:', document);
+  // console.log('Document Type:', document.type);
+  if(document.type === 'workspace'){
+    
+    this.router.navigate(['/documentView'], { state: { documentData: document } });
+  }
+  else{
+
+    this.loadDocument(document);
+   
+  }
+  
+}
+
+isImage(fileName: any): boolean {
+
+  // console.log('File Name: Seif ', fileName);
+
+  return /\.(jpg|jpeg|png|gif)$/i.test(String(fileName));
+}
+
+loadDocument(document:BaseData): void {
+  // Assuming documentData.id is set and valid
+ 
+  this.selectedDocument=document;
+  this.contentService.downloadDocument(String(document.id)).subscribe(
+    (response) => {
+      console.log('Downloaded document:', response);
+      const fileURL = URL.createObjectURL(response);
+      console.log('File URL:', fileURL);
+      this.selectedDocumentUrl = this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
+      this.previewDocumentDialog=true;
+      console.log('Documentssssss:', this.selectedDocument);
+    },
+    (error) => {
+      // console.error('Error downloading document', error);
+    }
+  );
+
+}
+
+onDialogHide(): void {
+  this.selectedDocumentUrl = null;
+  this.previewDocumentDialog = false;
+  console.log('Dialog closed');
+}
+
+
 
 
 

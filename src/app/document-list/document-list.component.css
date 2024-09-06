@@ -1,0 +1,35 @@
+.document-image {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+    margin: auto;
+  }
+  
+  .iframe-container {
+    width: 100%;
+    height: 80%;
+  }
+  
+  .document-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+
+.p-dialog .p-dialog-header .p-dialog-header-icon {
+    color: #ff0000; 
+    font-size: 1.5rem; 
+  }
+  
+  .p-dialog .p-dialog-header .p-dialog-header-close {
+    background-color: #000000; 
+    border-radius: 50%;
+    padding: 0.5rem; 
+  }
+  
+  .p-dialog .p-dialog-header .p-dialog-header-close:hover {
+    background-color: #ff0000; 
+    color: #ffffff; 
+  }
+  

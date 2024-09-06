@@ -6,5 +6,6 @@ export interface BaseData {
     workspaceId?: string;
     parentId?: string;
     type?: string;
+    path?: string;
 
   }
