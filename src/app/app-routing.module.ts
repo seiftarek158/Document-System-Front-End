@@ -11,11 +11,6 @@ import { DocumentListComponent } from './document-list/document-list.component';
 
 const routes: Routes = [
   {
-    path: 'home',
-    component: HomeComponent,
-
-  },
-  {
     path: 'login',
     component: LoginComponent
   },
@@ -35,9 +30,13 @@ const routes: Routes = [
   {
     path: 'documentList',
     component: DocumentListComponent
-  },
+  }
   
-
+,
+  {
+    path: 'documentList/subWorkspace',
+    component: DocumentListComponent
+  }
 ];
 
 @NgModule({

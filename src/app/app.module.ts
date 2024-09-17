@@ -17,7 +17,6 @@ import { MessageService } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { FormsModule } from '@angular/forms';
-import { ProductService } from './services/productservice.service';
 import { RippleModule } from 'primeng/ripple';
 import { WorkspaceListComponent } from './workspace-list/workspace-list.component';
 import { TokenInterceptorService } from './services/token-interceptor.service';
@@ -25,6 +24,8 @@ import { DocumentListComponent } from './document-list/document-list.component';
 import { FileUploadModule } from 'primeng/fileupload';
 
 import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { BreadcrumbModule } from 'primeng/breadcrumb';;
+
 
 // import { WorkspaceFormComponent } from './workspace-form/workspace-form.component';
 // import { SortModule } from 'primeng/sort';
@@ -40,6 +41,7 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     HomeComponent,
     WorkspaceListComponent,
     DocumentListComponent,
+
 
   ],
   imports: [
@@ -59,11 +61,12 @@ import { PdfViewerModule } from 'ng2-pdf-viewer';
     FormsModule,
     FileUploadModule,
     PdfViewerModule,
+    BreadcrumbModule,
 
      // Add the WorkspaceFormComponent to the imports
   
   ],
-  providers: [MessageService,ProductService,
+  providers: [MessageService,
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true }
   ],
   bootstrap: [AppComponent]

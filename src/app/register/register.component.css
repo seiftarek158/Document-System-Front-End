@@ -1,0 +1,159 @@
+html, body {
+    height: 100%; 
+    margin: 0; 
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    /* background: linear-gradient(to bottom right, #00c6ff 0%, #0072ff 100%);  */
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+}
+
+
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    height: 4rem;
+    width: auto;
+    z-index: 10;
+}
+
+.container {
+    width: 90%; 
+    max-width: 500px; 
+    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.9); 
+    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.2); 
+    text-align: center; 
+    transition: width 0.3s ease; 
+}
+
+h2 {
+    color: #0072ff;
+    font-weight: bold;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #0072ff;
+    margin-bottom: 20px;
+}
+
+label {
+    color: #0072ff;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    text-align: left; 
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 30px; 
+    box-sizing: border-box;
+    font-size: 16px;
+    background-color: #f0f8ff; 
+    transition: border 0.3s ease, box-shadow 0.3s ease; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-color: #0072ff; 
+    outline: none;
+    box-shadow: 0 4px 10px rgba(0, 114, 255, 0.2); 
+}
+
+.normalbutton {
+    background: linear-gradient(to right, #0072ff, #00c6ff);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.2s ease; 
+}
+.cripplebutton {
+    background: linear-gradient(to right, #6c737c, #777e80);
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    font-size: 16px;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.normalbutton:hover {
+    background: linear-gradient(to right, #005bb5, #008cff); 
+    transform: translateY(-3px); 
+}
+
+a {
+    color: #0072ff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+p {
+    color: #333;
+    text-align: center;
+    font-size: 14px;
+}
+
+
+@media only screen and (max-width: 768px) {
+    .container {
+        padding: 20px; 
+        width: 100%; 
+    }
+
+    h2 {
+        font-size: 20px; 
+    }
+
+    button {
+        font-size: 14px; 
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .container {
+        padding: 15px; 
+        width: 100%; 
+    }
+
+    h2 {
+        font-size: 18px; 
+    }
+
+    button {
+        font-size: 14px; 
+    }
+
+    label {
+        font-size: 14px; 
+    }
+
+    input[type="text"],
+    input[type="password"] {
+        padding: 10px; 
+        font-size: 14px; 
+    }
+}

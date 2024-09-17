@@ -9,69 +9,75 @@
         [rows]=5
         [first]="first"
         [showCurrentPageReport]="true"
-        [tableStyle]="{ 'min-width': '80rem' }"
+        [tableStyle]="{ 'width': '80rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         (onPage)="pageChange($event)"
-        [rowsPerPageOptions]="[5,10, 25, 50]"
         class="fixed-width-table"
+        emptyMessage="No Content Data found"
     >
         <ng-template pTemplate="header">
             <tr>
-                <th style="width:5%"  ></th>
-                <th  style="width:20%"  >
+                <th style="width:50px"  ></th>
+                <th  style="width:200px"  >
                     Name 
                 </th>
-                <th style="width:30%"  >Description</th>
-                <th  style="width:40%"  >Created Date </th>
-                <th style="width:20%"  ></th>
-                <th style="width:40%"  ></th>
-                <th style="width:20%"  ></th>
+                <th style="width:300px"  >Description</th>
+                <th  style="width:400px"  >Created Date </th>
+                <th style="width:200px"  >
+                  <div class="search-bar" *ngIf="searchable">
+                    <input type="text" [(ngModel)]="searchterm" placeholder="Search..." (input)="filterContentData()" />
+                  </div>
+
+                </th>
+                <th style="width:400px"  > <p-button label="Clear" *ngIf="searchable" [outlined]="true" icon="pi pi-filter-slash" (onClick)="clearSearch()" /></th>
+                <th style="width:200px"  ></th>
 
             </tr>
         </ng-template>
 
 
-        <ng-template pTemplate="body" let-BaseData let-editing="editing" let-ri="rowIndex" class="fixed-width-table">
+        <ng-template pTemplate="body" let-BaseData let-editing="editing" let-ri="rowIndex" class="fixed-width-table" >
             <tr [pEditableRow]="BaseData">
-                <td>
+                <td style="width:50px">
                     <ng-container *ngIf="BaseData.type === 'workspace'; else documentIcon">
-                        <i class="pi pi-folder" style="font-size: 2rem;"></i> <!-- Folder Icon -->
+                        <i class="pi pi-folder" style="font-size: 2rem;"></i> 
                       </ng-container>
                       <ng-template #documentIcon>
-                        <i class="pi pi-file" style="font-size: 2rem;"></i> <!-- File Icon -->
+                        <i class="pi pi-file" style="font-size: 2rem;"></i> 
                       </ng-template>
                 </td>
-                <td   (click)="!editing && OpenOrnavigateTo(BaseData)" style="cursor: pointer;">
+                <td   style="width:300px" (click)="!editing && OpenOrnavigateTo(BaseData)" style="cursor: pointer;" >
 
                     <p-cellEditor>
                         <ng-template pTemplate="input">
                             <input
                                 pInputText type="text"
                                 [(ngModel)]="BaseData.name"
+                                [disabled]="editingRowId !== BaseData.id"
                                  />
                         </ng-template>
+
                         <ng-template pTemplate="output">
                             {{BaseData.name}}
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td  >
+                <td style="width:500px" class="text-overflow"  >
                     <p-cellEditor>
                         <ng-template pTemplate="input" *ngIf="BaseData.type==='workspace'">
                             <input
                                 pInputText type="text"
-                                [(ngModel)]="BaseData.description" />
+                                [(ngModel)]="BaseData.description" 
+                                [disabled]="editingRowId !== BaseData.id"
+                                />
                         </ng-template>
                         <ng-template pTemplate="output">
                             {{BaseData.description}}
                         </ng-template>
                     </p-cellEditor>
                 </td>
-                <td  >{{ BaseData.createdAt | date: 'medium' }}</td>
-
-
-
-                <td  >
+                <td style="width:200px" >{{ BaseData.createdAt | date: 'medium' }}</td>
+                <td  style="width:200px">
                     <div class="flex align-items-center justify-content-center gap-2">
                       <button
                           *ngIf="BaseData.type === 'document'"
@@ -93,7 +99,7 @@
                             class="p-button-rounded p-button-text">
                         </button>
                         <button
-                            *ngIf="editing"
+                            *ngIf="editing && BaseData.id === editingRowId"
                             pButton
                             pRipple
                             type="button"
@@ -103,7 +109,7 @@
                             class="p-button-rounded p-button-text p-button-success mr-2">
                         </button>
                         <button
-                            *ngIf="editing"
+                            *ngIf="editing && BaseData.id === editingRowId"
                             pButton pRipple
                             type="button"
                             pCancelEditableRow
@@ -113,7 +119,7 @@
                         </button>
                     </div>
                 </td>
-                <td  >
+                <td  style="width:200px">
                     <p-button icon="pi pi-trash" 
                     class="p-button-rounded p-button-danger" (click)="confirmDelete(BaseData)"></p-button>
                   </td>

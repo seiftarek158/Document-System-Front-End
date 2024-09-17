@@ -1,5 +1,11 @@
 <div class="d-flex justify-content-center align-items-center h-100">
+<!-- <div>
+  <p-breadcrumb  [model]="(breadcrumbs$ | async) ?? undefined" [home]="home"></p-breadcrumb>
+</div> -->
+<div> 
   <router-outlet></router-outlet>
+</div>
+
   <p-toast position="top-right"></p-toast>
-  </div>
+</div>
 

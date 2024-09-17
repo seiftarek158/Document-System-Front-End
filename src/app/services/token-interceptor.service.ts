@@ -4,8 +4,8 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class TokenInterceptorService implements HttpInterceptor {
-  private loginUrl = 'http://localhost:8080/login';
-  private registerUrl = 'http://localhost:8080/Home/users';
+  private loginUrl = 'http://localhost:8081/login';
+  private registerUrl = 'http://localhost:8081/Home/users';
   private uploadUrl = 'https://www.primefaces.org/cdn/api/upload.php';
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
      

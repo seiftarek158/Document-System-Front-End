@@ -130,7 +130,8 @@ deleteWorkspace() {
 }
 
 navigateToDocuments(workspaceData: BaseData) {
-  this.router.navigate(['/documentList'],{state: {workspaceData}}); // Navigate to the home page
+  this.router.navigate(['/documentList'],{state: {workspaceData , searchable:true}}); // Navigate to the home page
+  
 }
 
 
