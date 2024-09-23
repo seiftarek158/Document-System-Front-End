@@ -22,7 +22,7 @@ import { WorkspaceListComponent } from './workspace-list/workspace-list.componen
 import { TokenInterceptorService } from './services/token-interceptor.service';
 import { DocumentListComponent } from './document-list/document-list.component';
 import { FileUploadModule } from 'primeng/fileupload';
-
+import { DropdownModule } from 'primeng/dropdown';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { BreadcrumbModule } from 'primeng/breadcrumb';;
 
@@ -62,7 +62,7 @@ import { BreadcrumbModule } from 'primeng/breadcrumb';;
     FileUploadModule,
     PdfViewerModule,
     BreadcrumbModule,
-
+    DropdownModule,
      // Add the WorkspaceFormComponent to the imports
   
   ],

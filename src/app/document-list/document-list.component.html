@@ -1,3 +1,4 @@
+<button pButton type="button" icon="pi pi-arrow-left" label="Back" (click)="goBack()" class="back-button"></button>
 <div class="card">
     <p-toast></p-toast>
 
@@ -9,7 +10,7 @@
         [rows]=5
         [first]="first"
         [showCurrentPageReport]="true"
-        [tableStyle]="{ 'width': '80rem' }"
+        [tableStyle]="{ 'width': '80rem', 'min-height': '20rem' }"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         (onPage)="pageChange($event)"
         class="fixed-width-table"
@@ -30,7 +31,15 @@
 
                 </th>
                 <th style="width:400px"  > <p-button label="Clear" *ngIf="searchable" [outlined]="true" icon="pi pi-filter-slash" (onClick)="clearSearch()" /></th>
-                <th style="width:200px"  ></th>
+                <th style="width:200px"  > 
+                   <p-dropdown 
+                  [options]="fileTypes" 
+                  [(ngModel)]="searchterm" 
+                  placeholder="Select a file type" 
+                  (onChange)="filterContentData()"
+                  filterBy="label">
+                </p-dropdown>
+              </th>
 
             </tr>
         </ng-template>

@@ -33,6 +33,16 @@ export class DocumentListComponent implements OnInit {
   searchterm: string = '';
   searchable: boolean = false;
 
+  fileTypes = [
+    { label: 'PDF', value: '.pdf' },
+    { label: 'Text', value: '.txt' },
+    { label: 'JPEG', value: '.jpg' },
+    { label: 'PNG', value: '.png' }
+  ];
+
+  selectedFileType: string = '';
+
+
   filterContentData(): void {
     this.contentService
       .searchDocuments(this.workspaceData.id || '', this.searchterm)
@@ -46,9 +56,6 @@ export class DocumentListComponent implements OnInit {
               detail: 'No documents found',
             });
           }
-        },
-        (error: any) => {
-          // this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to search documents' });
         }
       );
   }
@@ -113,7 +120,7 @@ export class DocumentListComponent implements OnInit {
         (updatedWorkspace) => {
           // Update the local workspace data with the updated workspace
           const index = this.ContentDataArray.findIndex(
-            (w) => w.id === updatedWorkspace.id
+            (w) => w.id === this.clonedBaseData['id']
           );
           if (index !== -1) {
             this.ContentDataArray[index] = updatedWorkspace;
@@ -160,6 +167,8 @@ export class DocumentListComponent implements OnInit {
         }
       );
     }
+
+    console.log('Base data:', file.type);
   }
 
   onRowEditCancel(workspace: BaseData, index: number) {
@@ -283,7 +292,7 @@ export class DocumentListComponent implements OnInit {
       this.workspaceData.id || ''
     );
     const documentData = this.contentService.getAllDocumentData(
-      this.workspaceData
+       this.workspaceData.id || ''
     );
 
     forkJoin([nestedWorkspaceData, documentData]).subscribe(
@@ -361,5 +370,34 @@ export class DocumentListComponent implements OnInit {
     this.selectedDocumentUrl = null;
     this.previewDocumentDialog = false;
     console.log('Dialog closed');
+  }
+
+  goBack() { 
+    if(this.workspaceData.parentId !== null){
+      this.contentService.getDirectoryData(this.workspaceData.parentId || '').subscribe(
+        (response) => {
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['/documentList'], { state: { workspaceData: response } });
+          });
+          this.getStateData();
+        },
+        (error) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to fetch content data',
+          });
+        }
+      );
+    }
+    else{
+
+      this.router.navigate(['/workspaceList']);
+    }
+    
+    // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    //     this.router.navigate(['/documentList'], { state: { workspaceData } });
+    //   });
+    //   this.getStateData();
   }
 }

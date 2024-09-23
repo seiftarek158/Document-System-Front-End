@@ -9,10 +9,8 @@ import { BaseData } from './basedata';
   providedIn: 'root',
 })
 export class WorkspaceService {
-  private apiUrls = [
-    'http://localhost:8082/directory',
-    'http://localhost:8083/directory',
-  ];
+  private apiUrl =
+    'http://localhost:8082/directory'
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -20,12 +18,12 @@ export class WorkspaceService {
     console.log('inside workspace service');
     const token = this.authService.getToken();
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    return this.http.get<BaseData[]>(`${this.apiUrls[0]}/user`, { headers });
+    return this.http.get<BaseData[]>(`${this.apiUrl}/user`, { headers });
   }
 
   updateWorkspace(directory: BaseData): Observable<BaseData> {
     return this.http.put<BaseData>(
-      `${this.apiUrls[1]}/${directory.id}`,
+      `${this.apiUrl}/${directory.id}`,
       directory
     );
   }
@@ -43,9 +41,9 @@ export class WorkspaceService {
       }
 
     }
-    return this.http.post<BaseData>(`${this.apiUrls[1]}/new`, directory);
+    return this.http.post<BaseData>(`${this.apiUrl}/new`, directory);
   }
   deleteWorkspace(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrls[1]}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

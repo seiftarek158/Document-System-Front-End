@@ -8,18 +8,22 @@ import { BaseData } from './basedata';
   providedIn: 'root',
 })
 export class ContentService {
-  private apiUrls = ['http://localhost:8082/', 'http://localhost:8083/'];
+  private apiUrl = 'http://localhost:8082/';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
-  getAllDocumentData(directory: BaseData): Observable<BaseData[]> {
+  getAllDocumentData(id: String): Observable<BaseData[]> {
     return this.http.get<BaseData[]>(
-      `${this.apiUrls[0]}directory/${directory.id}`
+      `${this.apiUrl}directory/documents/${id}`
     );
+  }
+
+  getDirectoryData(id: String): Observable<BaseData> {
+    return this.http.get<BaseData>(`${this.apiUrl}directory/${id}`);
   }
   getAllNestedWorkspaceData(id: String): Observable<BaseData[]> {
     return this.http.get<BaseData[]>(
-      `${this.apiUrls[0]}directory/nested/${id}`
+      `${this.apiUrl}directory/nested/${id}`
     );
   }
 
@@ -27,23 +31,23 @@ export class ContentService {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<BaseData>(
-      `${this.apiUrls[1]}${directory.id}/upload`,
+      `${this.apiUrl}${directory.id}/upload`,
       formData
     );
   }
   deleteDocument(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrls[1]}document/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}document/${id}`);
   }
 
   updateDocument(document: BaseData): Observable<BaseData> {
     return this.http.put<BaseData>(
-      `${this.apiUrls[1]}document/${document.id}`,
+      `${this.apiUrl}document/${document.id}`,
       document
     );
   }
 
   downloadDocument(id: string): Observable<Blob> {
-    return this.http.get(`${this.apiUrls[0]}document/${id}`, {
+    return this.http.get(`${this.apiUrl}document/${id}`, {
       responseType: 'blob',
     });
   }
@@ -54,7 +58,7 @@ export class ContentService {
   ): Observable<BaseData[]> {
     const params = new HttpParams().set('searchTerm', searchTerm);
     return this.http.get<BaseData[]>(
-      `${this.apiUrls[0]}${workspaceId}/documents`,
+      `${this.apiUrl}${workspaceId}/documents`,
       { params }
     );
   }
