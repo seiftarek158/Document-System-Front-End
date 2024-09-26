@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BaseData } from '../../services/basedata';
-import { ContentService } from '../../services/document-service/content.service';
+import { ContentService } from '../../services/document-service/document.service';
 import { MessageService } from 'primeng/api';
-import { WorkspaceService } from '../../services/directory-service/directory.service';
+import { DirectoryService } from '../../services/directory-service/directory.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as FileSaver from 'file-saver';
 import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
@@ -79,7 +79,7 @@ export class DocumentListComponent implements OnInit {
 
   constructor(
     private contentService: ContentService,
-    private workspaceService: WorkspaceService,
+    private workspaceService: DirectoryService,
     private router: Router,
     private route: ActivatedRoute,
     private messageService: MessageService,
@@ -92,8 +92,6 @@ export class DocumentListComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.directoryId = params['workspaceId'] || '';
       this.searchable = params['searchable'] === 'true';
-      console.log('Directory ID:', this.directoryId);
-      console.log('Searchable:', this.searchable);
       this.loadContentData();
     });
   }
@@ -121,13 +119,11 @@ export class DocumentListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('getState ');
     this.getStateData();
   }
   onRowEditInit(content: BaseData) {
     this.editingRowId = content.id || null;
     this.clonedBaseData[content.id as string] = { ...content };
-    // console.log(this.clonedBaseData[file.id as string] );
   }
 
   onRowEditSave(file: BaseData) {
@@ -157,7 +153,7 @@ export class DocumentListComponent implements OnInit {
         }
       );
     } else {
-      this.workspaceService.updateWorkspace(file).subscribe(
+      this.workspaceService.updateDirectory(file).subscribe(
         (updatedWorkspace) => {
           // Update the local workspace data with the updated workspace
           const index = this.ContentDataArray.findIndex(
@@ -183,8 +179,6 @@ export class DocumentListComponent implements OnInit {
         }
       );
     }
-
-    console.log('Base data:', file.type);
   }
 
   onRowEditCancel(workspace: BaseData, index: number) {
@@ -225,7 +219,7 @@ export class DocumentListComponent implements OnInit {
           );
       } else {
         this.workspaceService
-          .deleteWorkspace(this.BaseDataToDelete.id ?? '')
+          .deleteDirectory(this.BaseDataToDelete.id ?? '')
           .subscribe(
             () => {
               this.ContentDataArray = this.ContentDataArray.filter(
@@ -253,10 +247,10 @@ export class DocumentListComponent implements OnInit {
   }
   onSubmit() {
     this.workspaceService
-      .createWorkspace(this.newFile, this.directoryData)
+      .createDirectory(this.newFile, this.directoryData)
       .subscribe(
         (createdWorkspace) => {
-          createdWorkspace.type = 'workspace';
+          createdWorkspace.type = 'directory';
           createdWorkspace.parentId = this.directoryData.id;
           this.ContentDataArray.push(createdWorkspace);
           this.messageService.add({
@@ -279,10 +273,8 @@ export class DocumentListComponent implements OnInit {
   }
   onUpload(event: any, fileUpload: any): void {
     const file = event.files[0];
-    // console.log("inside document list service");
     this.contentService.uploadDocument(this.directoryData, file).subscribe(
       (response) => {
-        // console.log('File uploaded successfully', response);
         this.loadContentData(); // Reload the content data to reflect the new file
         this.messageService.add({
           severity: 'success',
@@ -308,7 +300,6 @@ export class DocumentListComponent implements OnInit {
 
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       const parentId = directoryId;
-      console.log('Parent ID:',parentId);
       this.router.navigate(['/documentList'], { 
         queryParams: {
               workspaceId: parentId,
@@ -324,7 +315,6 @@ export class DocumentListComponent implements OnInit {
     // this.contentService.getDirectoryData(directoryId || '').subscribe(
     //   (response) => {
     //     this.directoryData = response;
-    //     console.log('Directory Data:', this.directoryData);
     //   },
     //   (error) => {
     //     this.messageService.add({
@@ -348,10 +338,10 @@ export class DocumentListComponent implements OnInit {
           this.directoryData.nested_documents = response.nested_documents;
 
           const nestedDirectoryData = this.directoryData.nested_directories;
-          console.log('Nested Directory Data:', nestedDirectoryData);
+
           if (nestedDirectoryData) {
             nestedDirectoryData.forEach((directory) => {
-              directory.type = 'workspace';
+              directory.type = 'directory';
             });
           }
           
@@ -361,7 +351,6 @@ export class DocumentListComponent implements OnInit {
               document.type = 'document';
             });
           }
-          console.log('Document Data:', documentData);
           this.ContentDataArray = (nestedDirectoryData ?? [])!.concat(documentData ?? []);
         },
     
@@ -373,38 +362,6 @@ export class DocumentListComponent implements OnInit {
         });
       }
     );
-    // const nestedWorkspaceData = this.contentService.getAllNestedWorkspaceData(
-    //   this.directoryData.id || ''
-    // );
-        // const documentData = this.contentService.getAllDocumentData(
-    //    this.directoryData.id || ''
-    // );
-
-    /*
-    this.loadDirectoryData(this.directoryId);
-    console.log('Directory Data name:', this.directoryData.name);
-    const nestedDirectoryData = this.directoryData.nested_directories;
-    console.log('Nested Directory Data:', nestedDirectoryData);
-
-    const documentData = this.directoryData.nested_documents;
-    this.ContentDataArray = (nestedDirectoryData ?? [])!.concat(documentData ?? []);
-    */
-   
-    // forkJoin([nestedWorkspaceData || [], documentData || []]).subscribe(
-    //   ([nestedWorkspaces, documents]) => {
-    //     this.ContentDataArray = [
-    //       ...nestedWorkspaces.map((item: BaseData) => ({ ...item, type: 'workspace' })),
-    //       ...documents.map((item: BaseData) => ({ ...item, type: 'document' })),
-    //     ];
-    //   },
-    //   (error) => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Error',
-    //       detail: 'Failed to fetch content data',
-    //     });
-    //   }
-    // );
   }
 
   downloadDocument(documentid: string, documentName: string): void {
@@ -424,25 +381,17 @@ export class DocumentListComponent implements OnInit {
   }
 
   OpenOrnavigateTo(workspaceData: BaseData): void {
-    console.log('ContentData:', workspaceData);
-    if (workspaceData.type === 'workspace') {
+    if (workspaceData.type === 'directory') {
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
         const parentId = workspaceData.id;
-        console.log('Parent ID:',parentId);
         this.router.navigate(['/documentList'], { 
           queryParams: {
                 workspaceId: parentId,
                 searchable:this.searchable
               }
         });
-        // this.getStateData();
       });
-      // this.router.navigate(['/documentList'], {
-      //   queryParams: {
-      //     workspaceId: this.directoryData.id,
-      //     searchable:this.searchable
-      //   }
-      // });
+
 
     } else {
       this.loadDocument(workspaceData);
@@ -455,16 +404,12 @@ export class DocumentListComponent implements OnInit {
 
   loadDocument(document: BaseData): void {
     this.selectedDocument = document;
-    console.log('Selected Document:', this.selectedDocument);
     this.contentService.downloadDocument(String(document.id)).subscribe(
       (response) => {
-        console.log('Downloaded document:', response);
         const fileURL = URL.createObjectURL(response);
-        console.log('File URL:', fileURL);
         this.selectedDocumentUrl =
           this.sanitizer.bypassSecurityTrustResourceUrl(fileURL);
         this.previewDocumentDialog = true;
-        console.log('Documentssssss:', this.selectedDocument);
       },
       (error) => {
         this.messageService.add({
@@ -479,7 +424,6 @@ export class DocumentListComponent implements OnInit {
   onDialogHide(): void {
     this.selectedDocumentUrl = null;
     this.previewDocumentDialog = false;
-    console.log('Dialog closed');
   }
 
   sanitizeImageUrl(url: string): SafeUrl {
@@ -489,21 +433,14 @@ export class DocumentListComponent implements OnInit {
  
 
   goBack() { 
-    console.log('Inside go back');
-    console.log('Parent ID:',this.directoryData.parentId);
     if(this.directoryData.parentId !== null){
       this.loadDirectoryDataforGoBack(this.directoryData.parentId);
       
     }
     else{
-      console.log('Inside else');
       this.router.navigate(['/workspaceList']);
     
     }
     
-    // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-    //     this.router.navigate(['/documentList'], { state: { workspaceData } });
-    //   });
-    //   this.getStateData();
   }
 }

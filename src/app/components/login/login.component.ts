@@ -63,10 +63,8 @@ export class LoginComponent {
       email: this.loginForm.get('email')?.value||'',
       password: this.loginForm.get('password')?.value||''
      };
-     console.log('Credentials', credentials);
     this.authService.login(credentials).subscribe(
       response => {
-        console.log('Response:', response);
         if (response.status === '200') {
           this.msgService.add({ severity: 'success', summary: 'Success', detail: 'Login successful!' });
           this.router.navigate(['/workspaceList']);

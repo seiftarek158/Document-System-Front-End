@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WorkspaceService } from '../services/directory-service/directory.service';
+import { DirectoryService } from '../services/directory-service/directory.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 ;

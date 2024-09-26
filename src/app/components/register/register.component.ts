@@ -74,7 +74,6 @@ export class RegisterComponent {
 
   onSubmit(): void {
     const formData = this.registerForm.value;
-    console.log('Form Data:', JSON.stringify(formData, null, 2)); // Print JSON data to console
     if (this.registerForm.valid) {
       this.http.post('http://localhost:8081/Home/users', this.registerForm.value).subscribe(
         (response: any) => {

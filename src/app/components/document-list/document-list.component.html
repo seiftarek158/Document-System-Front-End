@@ -48,7 +48,7 @@
         <ng-template pTemplate="body" let-BaseData let-editing="editing" let-ri="rowIndex" class="fixed-width-table" >
             <tr [pEditableRow]="BaseData">
                 <td style="width:50px">
-                    <ng-container *ngIf="BaseData.type === 'workspace'; else documentIcon">
+                    <ng-container *ngIf="BaseData.type === 'directory'; else documentIcon">
                         <i class="pi pi-folder" style="font-size: 2rem;"></i> 
                       </ng-container>
                       <ng-template #documentIcon>
@@ -73,7 +73,7 @@
                 </td>
                 <td style="width:500px" class="text-overflow"  >
                     <p-cellEditor>
-                        <ng-template pTemplate="input" *ngIf="BaseData.type==='workspace'">
+                        <ng-template pTemplate="input" *ngIf="BaseData.type==='directory'">
                             <input
                                 pInputText type="text"
                                 [(ngModel)]="BaseData.description" 

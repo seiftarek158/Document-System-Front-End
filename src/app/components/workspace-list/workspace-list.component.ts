@@ -1,6 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-import { WorkspaceService } from '../../services/directory-service/directory.service';
+import { DirectoryService } from '../../services/directory-service/directory.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { BaseData } from '../../services/basedata';
@@ -23,14 +23,14 @@ export class WorkspaceListComponent implements OnInit{
 
   
     constructor(
-      private workspaceService: WorkspaceService,
+      private workspaceService: DirectoryService,
       private router: Router, 
       private messageService: MessageService) {}
 
 
 
     ngOnInit(): void {
-    this.workspaceService.getWorkspaceData().subscribe(
+    this.workspaceService.getDirectoryData().subscribe(
       data => {
         this.workspaceData = data.map(item => ({ ...item, type: "workspace" }));;
         
@@ -67,12 +67,11 @@ isFirstPage(): boolean {
 
 onRowEditInit(workspace: BaseData) {
   this.clonedWorkspaces[workspace.id as string] = { ...workspace };
-  console.log(this.clonedWorkspaces[workspace.id as string] );
 
 }
 
 onRowEditSave(workspace: BaseData) {
-  this.workspaceService.updateWorkspace(workspace).subscribe(
+  this.workspaceService.updateDirectory(workspace).subscribe(
     updatedWorkspace => {
       // Update the local workspace data with the updated workspace
       const index = this.workspaceData.findIndex(w => w.id === updatedWorkspace.id);
@@ -95,7 +94,7 @@ onRowEditCancel(workspace: BaseData, index: number) {
 }
 
 onSubmit(){
-  this.workspaceService.createWorkspace(this.newWorkspace).subscribe(
+  this.workspaceService.createDirectory(this.newWorkspace).subscribe(
     createdWorkspace => {
       this.workspaceData.push(createdWorkspace);
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace created successfully' });
@@ -114,7 +113,7 @@ confirmDelete(workspace: BaseData) {
 }
 deleteWorkspace() {
   if (this.workspaceToDelete) {
-    this.workspaceService.deleteWorkspace(this.workspaceToDelete.id ?? '').subscribe(
+    this.workspaceService.deleteDirectory(this.workspaceToDelete.id ?? '').subscribe(
       () => {
         this.workspaceData = this.workspaceData.filter(ws => ws.id !== this.workspaceToDelete!.id);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace deleted successfully' });
@@ -131,7 +130,6 @@ deleteWorkspace() {
 
 navigateToDocuments(workspaceData: BaseData) {
   const workspaceId = workspaceData.id;
-  console.log('inside navigateToDocuments',workspaceId);
   this.router.navigate(['/documentList'],{queryParams: {workspaceId:workspaceId , searchable:true}});
   
 }

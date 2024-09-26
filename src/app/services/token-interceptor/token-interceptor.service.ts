@@ -11,7 +11,6 @@ export class TokenInterceptorService implements HttpInterceptor {
      
   
     const token = localStorage.getItem('Authorization');
-    console.log("inside token interceptor");
 
   // Exclude the login 
   if (req.url === this.loginUrl || req.url === this.registerUrl || req.url === this.uploadUrl) {
