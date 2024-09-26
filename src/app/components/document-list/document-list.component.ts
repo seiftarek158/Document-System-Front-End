@@ -303,23 +303,9 @@ export class DocumentListComponent implements OnInit {
     );
   }
 
-  loadDirectoryDataforGoBack(directoryId?:String): void {
-    // this.contentService.getDirectoryData(directoryId || '').subscribe(
-    //   (response) => {
-        
-    //     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-    //       this.router.navigate(['/documentList'], { state: { workspaceData: response } });
-    //     });
-    //   },
-    //   (error) => {
-    //     this.messageService.add({
-    //       severity: 'error',
-    //       summary: 'Error',
-    //       detail: 'Failed to fetch content data',
 
-    //     });
-    //   }
-    // );
+  loadDirectoryDataforGoBack(directoryId?:String): void {
+
     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
       const parentId = directoryId;
       console.log('Parent ID:',parentId);
