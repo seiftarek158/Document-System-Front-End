@@ -23,14 +23,14 @@ export class WorkspaceListComponent implements OnInit{
 
   
     constructor(
-      private workspaceService: DirectoryService,
+      private directoryService: DirectoryService,
       private router: Router, 
       private messageService: MessageService) {}
 
 
 
     ngOnInit(): void {
-    this.workspaceService.getDirectoryData().subscribe(
+    this.directoryService.getDirectoryData().subscribe(
       data => {
         this.workspaceData = data.map(item => ({ ...item, type: "workspace" }));;
         
@@ -71,7 +71,7 @@ onRowEditInit(workspace: BaseData) {
 }
 
 onRowEditSave(workspace: BaseData) {
-  this.workspaceService.updateDirectory(workspace).subscribe(
+  this.directoryService.updateDirectory(workspace).subscribe(
     updatedWorkspace => {
       // Update the local workspace data with the updated workspace
       const index = this.workspaceData.findIndex(w => w.id === updatedWorkspace.id);
@@ -94,7 +94,7 @@ onRowEditCancel(workspace: BaseData, index: number) {
 }
 
 onSubmit(){
-  this.workspaceService.createDirectory(this.newWorkspace).subscribe(
+  this.directoryService.createDirectory(this.newWorkspace).subscribe(
     createdWorkspace => {
       this.workspaceData.push(createdWorkspace);
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace created successfully' });
@@ -113,7 +113,7 @@ confirmDelete(workspace: BaseData) {
 }
 deleteWorkspace() {
   if (this.workspaceToDelete) {
-    this.workspaceService.deleteDirectory(this.workspaceToDelete.id ?? '').subscribe(
+    this.directoryService.deleteDirectory(this.workspaceToDelete.id ?? '').subscribe(
       () => {
         this.workspaceData = this.workspaceData.filter(ws => ws.id !== this.workspaceToDelete!.id);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Workspace deleted successfully' });
