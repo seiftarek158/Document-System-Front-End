@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { BaseData } from '../services/basedata';
-import { ContentService } from '../services/content.service';
+import { Router, ActivatedRoute } from '@angular/router';
+import { BaseData } from '../../services/basedata';
+import { ContentService } from '../../services/document-service/content.service';
 import { MessageService } from 'primeng/api';
-import { WorkspaceService } from '../services/workspace.service';
+import { WorkspaceService } from '../../services/directory-service/directory.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import * as FileSaver from 'file-saver';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { forkJoin } from 'rxjs';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
+import { forkJoin, Observable } from 'rxjs';
+import { Directory } from '../../services/directory';
+import { LoadDirectory } from 'src/app/services/loadDirectory';
 
 @Component({
   selector: 'app-document-list',
@@ -15,7 +17,8 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./document-list.component.css'],
 })
 export class DocumentListComponent implements OnInit {
-  workspaceData: BaseData = {};
+  directoryId?: string;
+  directoryData: Directory = {};
   newFile: BaseData = {};
   ContentDataArray: BaseData[] = [];
   clonedBaseData: { [s: string]: BaseData } = {};
@@ -44,8 +47,17 @@ export class DocumentListComponent implements OnInit {
 
 
   filterContentData(): void {
+    let searchableWorkspaceData: string | undefined='';
+
+    if(this.directoryData.workspaceId !== null){
+      searchableWorkspaceData=this.directoryData.workspaceId;
+
+    }
+    else{
+      searchableWorkspaceData=this.directoryData.id;
+    }
     this.contentService
-      .searchDocuments(this.workspaceData.id || '', this.searchterm)
+      .searchDocuments(searchableWorkspaceData || '', this.searchterm)
       .subscribe(
         (result: BaseData[]) => {
           this.ContentDataArray = result;
@@ -69,19 +81,22 @@ export class DocumentListComponent implements OnInit {
     private contentService: ContentService,
     private workspaceService: WorkspaceService,
     private router: Router,
+    private route: ActivatedRoute,
     private messageService: MessageService,
     private sanitizer: DomSanitizer
   ) {
-    this.getStateData();
+    // this.getStateData();
   }
 
   getStateData() {
-    const navigation = this.router.getCurrentNavigation();
-    this.workspaceData = navigation?.extras.state?.['workspaceData'];
-    this.searchable = navigation?.extras.state?.['searchable'] || false;
-    this.loadContentData();
+    this.route.queryParams.subscribe(params => {
+      this.directoryId = params['workspaceId'] || '';
+      this.searchable = params['searchable'] === 'true';
+      console.log('Directory ID:', this.directoryId);
+      console.log('Searchable:', this.searchable);
+      this.loadContentData();
+    });
   }
-
   next() {
     this.first = this.first + this.rows;
   }
@@ -106,7 +121,8 @@ export class DocumentListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadContentData();
+    console.log('getState ');
+    this.getStateData();
   }
   onRowEditInit(content: BaseData) {
     this.editingRowId = content.id || null;
@@ -237,11 +253,11 @@ export class DocumentListComponent implements OnInit {
   }
   onSubmit() {
     this.workspaceService
-      .createWorkspace(this.newFile, this.workspaceData)
+      .createWorkspace(this.newFile, this.directoryData)
       .subscribe(
         (createdWorkspace) => {
           createdWorkspace.type = 'workspace';
-          createdWorkspace.parentId = this.workspaceData.id;
+          createdWorkspace.parentId = this.directoryData.id;
           this.ContentDataArray.push(createdWorkspace);
           this.messageService.add({
             severity: 'success',
@@ -264,7 +280,7 @@ export class DocumentListComponent implements OnInit {
   onUpload(event: any, fileUpload: any): void {
     const file = event.files[0];
     // console.log("inside document list service");
-    this.contentService.uploadDocument(this.workspaceData, file).subscribe(
+    this.contentService.uploadDocument(this.directoryData, file).subscribe(
       (response) => {
         // console.log('File uploaded successfully', response);
         this.loadContentData(); // Reload the content data to reflect the new file
@@ -287,21 +303,82 @@ export class DocumentListComponent implements OnInit {
     );
   }
 
-  loadContentData(): void {
-    const nestedWorkspaceData = this.contentService.getAllNestedWorkspaceData(
-      this.workspaceData.id || ''
-    );
-    const documentData = this.contentService.getAllDocumentData(
-       this.workspaceData.id || ''
-    );
+  loadDirectoryDataforGoBack(directoryId?:String): void {
+    // this.contentService.getDirectoryData(directoryId || '').subscribe(
+    //   (response) => {
+        
+    //     this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    //       this.router.navigate(['/documentList'], { state: { workspaceData: response } });
+    //     });
+    //   },
+    //   (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Error',
+    //       detail: 'Failed to fetch content data',
 
-    forkJoin([nestedWorkspaceData, documentData]).subscribe(
-      ([nestedWorkspaces, documents]) => {
-        this.ContentDataArray = [
-          ...nestedWorkspaces.map((item) => ({ ...item, type: 'workspace' })),
-          ...documents.map((item) => ({ ...item, type: 'document' })),
-        ];
-      },
+    //     });
+    //   }
+    // );
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      const parentId = directoryId;
+      console.log('Parent ID:',parentId);
+      this.router.navigate(['/documentList'], { 
+        queryParams: {
+              workspaceId: parentId,
+              searchable:this.searchable
+            }
+      });
+      // this.getStateData();
+    });
+
+  }
+
+  loadDirectoryData(directoryId?: string): Observable<LoadDirectory> {
+    // this.contentService.getDirectoryData(directoryId || '').subscribe(
+    //   (response) => {
+    //     this.directoryData = response;
+    //     console.log('Directory Data:', this.directoryData);
+    //   },
+    //   (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Error',
+    //       detail: 'Failed to fetch content data',
+    //     });
+    //   }
+    // );
+    return this.contentService.getDirectoryData(directoryId || '');
+  }
+  loadContentData(): void {
+
+    this.loadDirectoryData(this.directoryId).subscribe(
+      (response) => {
+        if (response && response.parentDirectory) {
+          this.directoryData = response.parentDirectory;
+        }
+
+          this.directoryData.nested_directories = response.nested_directories;
+          this.directoryData.nested_documents = response.nested_documents;
+
+          const nestedDirectoryData = this.directoryData.nested_directories;
+          console.log('Nested Directory Data:', nestedDirectoryData);
+          if (nestedDirectoryData) {
+            nestedDirectoryData.forEach((directory) => {
+              directory.type = 'workspace';
+            });
+          }
+          
+          const documentData = this.directoryData.nested_documents;
+          if (documentData) {
+            documentData.forEach((document) => {
+              document.type = 'document';
+            });
+          }
+          console.log('Document Data:', documentData);
+          this.ContentDataArray = (nestedDirectoryData ?? [])!.concat(documentData ?? []);
+        },
+    
       (error) => {
         this.messageService.add({
           severity: 'error',
@@ -310,6 +387,38 @@ export class DocumentListComponent implements OnInit {
         });
       }
     );
+    // const nestedWorkspaceData = this.contentService.getAllNestedWorkspaceData(
+    //   this.directoryData.id || ''
+    // );
+        // const documentData = this.contentService.getAllDocumentData(
+    //    this.directoryData.id || ''
+    // );
+
+    /*
+    this.loadDirectoryData(this.directoryId);
+    console.log('Directory Data name:', this.directoryData.name);
+    const nestedDirectoryData = this.directoryData.nested_directories;
+    console.log('Nested Directory Data:', nestedDirectoryData);
+
+    const documentData = this.directoryData.nested_documents;
+    this.ContentDataArray = (nestedDirectoryData ?? [])!.concat(documentData ?? []);
+    */
+   
+    // forkJoin([nestedWorkspaceData || [], documentData || []]).subscribe(
+    //   ([nestedWorkspaces, documents]) => {
+    //     this.ContentDataArray = [
+    //       ...nestedWorkspaces.map((item: BaseData) => ({ ...item, type: 'workspace' })),
+    //       ...documents.map((item: BaseData) => ({ ...item, type: 'document' })),
+    //     ];
+    //   },
+    //   (error) => {
+    //     this.messageService.add({
+    //       severity: 'error',
+    //       summary: 'Error',
+    //       detail: 'Failed to fetch content data',
+    //     });
+    //   }
+    // );
   }
 
   downloadDocument(documentid: string, documentName: string): void {
@@ -332,9 +441,23 @@ export class DocumentListComponent implements OnInit {
     console.log('ContentData:', workspaceData);
     if (workspaceData.type === 'workspace') {
       this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['/documentList'], { state: { workspaceData } });
+        const parentId = workspaceData.id;
+        console.log('Parent ID:',parentId);
+        this.router.navigate(['/documentList'], { 
+          queryParams: {
+                workspaceId: parentId,
+                searchable:this.searchable
+              }
+        });
+        // this.getStateData();
       });
-      this.getStateData();
+      // this.router.navigate(['/documentList'], {
+      //   queryParams: {
+      //     workspaceId: this.directoryData.id,
+      //     searchable:this.searchable
+      //   }
+      // });
+
     } else {
       this.loadDocument(workspaceData);
     }
@@ -346,6 +469,7 @@ export class DocumentListComponent implements OnInit {
 
   loadDocument(document: BaseData): void {
     this.selectedDocument = document;
+    console.log('Selected Document:', this.selectedDocument);
     this.contentService.downloadDocument(String(document.id)).subscribe(
       (response) => {
         console.log('Downloaded document:', response);
@@ -372,27 +496,23 @@ export class DocumentListComponent implements OnInit {
     console.log('Dialog closed');
   }
 
+  sanitizeImageUrl(url: string): SafeUrl {
+    return this.sanitizer.bypassSecurityTrustUrl(url);
+  }
+
+ 
+
   goBack() { 
-    if(this.workspaceData.parentId !== null){
-      this.contentService.getDirectoryData(this.workspaceData.parentId || '').subscribe(
-        (response) => {
-          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate(['/documentList'], { state: { workspaceData: response } });
-          });
-          this.getStateData();
-        },
-        (error) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Failed to fetch content data',
-          });
-        }
-      );
+    console.log('Inside go back');
+    console.log('Parent ID:',this.directoryData.parentId);
+    if(this.directoryData.parentId !== null){
+      this.loadDirectoryDataforGoBack(this.directoryData.parentId);
+      
     }
     else{
-
+      console.log('Inside else');
       this.router.navigate(['/workspaceList']);
+    
     }
     
     // this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {

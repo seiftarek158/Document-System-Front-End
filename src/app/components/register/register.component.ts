@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { AbstractControl, AsyncValidatorFn, FormBuilder, ValidationErrors, Validators } from '@angular/forms';
 import { delay, map, Observable, of } from 'rxjs';
-import { passwordMatchValidator } from '../shared/password-match.directive';
+import { passwordMatchValidator } from '../../shared/password-match.directive';
 import { MessageService } from 'primeng/api';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';

@@ -1,9 +1,9 @@
 
 import { Component, OnInit } from '@angular/core';
-import { WorkspaceService } from '../services/workspace.service';
+import { WorkspaceService } from '../../services/directory-service/directory.service';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { BaseData } from '../services/basedata';
+import { BaseData } from '../../services/basedata';
 
 @Component({
   selector: 'app-workspace-list',
@@ -130,7 +130,9 @@ deleteWorkspace() {
 }
 
 navigateToDocuments(workspaceData: BaseData) {
-  this.router.navigate(['/documentList'],{state: {workspaceData , searchable:true}}); // Navigate to the home page
+  const workspaceId = workspaceData.id;
+  console.log('inside navigateToDocuments',workspaceId);
+  this.router.navigate(['/documentList'],{queryParams: {workspaceId:workspaceId , searchable:true}});
   
 }
 

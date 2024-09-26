@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
-import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
-import { WorkspaceListComponent } from './workspace-list/workspace-list.component';
-import { DocumentListComponent } from './document-list/document-list.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { WorkspaceListComponent } from './components/workspace-list/workspace-list.component';
+import { DocumentListComponent } from './components/document-list/document-list.component';
 
 // import { AuthGuard } from './guards/auth.guard';
 
