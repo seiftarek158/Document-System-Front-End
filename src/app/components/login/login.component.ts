@@ -3,7 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -63,17 +63,21 @@ export class LoginComponent {
       email: this.loginForm.get('email')?.value||'',
       password: this.loginForm.get('password')?.value||''
      };
+     console.log("in on submit");
     this.authService.login(credentials).subscribe(
-      response => {
-        if (response.status === '200') {
+      (response:HttpResponse<String>) => {
+        console.log("response.status: ",response.status);
+        if (response.status === 200) {
+          // const responseBody = response.body ? JSON.parse(response.body);
           this.msgService.add({ severity: 'success', summary: 'Success', detail: 'Login successful!' });
           this.router.navigate(['/workspaceList']);
         }
       },
       error => {
-        if (error.status === '401') {
+        if (error.status === 401) {
           this.msgService.add({ severity: 'error', summary: 'Error', detail: 'Invalid email or password' });
         } else {
+          console.error('Server error:', error);
           this.msgService.add({ severity: 'error', summary: 'Error', detail: 'An error occurred. Please try again later.' });
 
         }

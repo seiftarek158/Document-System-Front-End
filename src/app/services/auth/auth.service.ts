@@ -15,10 +15,12 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   login(credentials: { email: string; password: string }): Observable<any> {
-    return this.http.post<any>(this.loginUrl, credentials).pipe(
+    console.log("in login");
+    return this.http.post<any>(this.loginUrl, credentials,{ observe: 'response' }).pipe(
       tap(response => {
-        localStorage.setItem('Authorization', response.authToken);
-       
+        console.log("response: ",response);
+        const authToken=response.body.authToken;
+        localStorage.setItem('Authorization', authToken);
       })
     );
   }
